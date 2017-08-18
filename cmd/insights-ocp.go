@@ -28,7 +28,7 @@ func inspect(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	if (req.ContentPath == nil || req.ImageId == nil) {
+	if (req.ContentPath == "" || req.ImageId == "") {
 		http.Error(w, "Invalid request", 400)
 		return
 	}
