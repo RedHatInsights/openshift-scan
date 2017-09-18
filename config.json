@@ -1,0 +1,5 @@
+{
+    "DatabaseDir": ".ocp-db",
+    "Port": 9000,
+    "Cmd": "insights-client --analyze-image --verbose --to-json --mountpoint %s"
+}

@@ -10,7 +10,13 @@ import (
 	"time"
 )
 
-var databaseDir = ".insights-ocp-data"
+type Config struct {
+	Cmd         string
+	DatabaseDir string
+	Port        int
+}
+
+var cfg Config
 
 type Request struct {
 	ContentPath string
@@ -95,7 +101,7 @@ func inspect(w http.ResponseWriter, r *http.Request) {
 }
 
 func persist(imageId string, data *ClientResponse) {
-	var targ = filepath.Join(databaseDir, imageId[:2], imageId) + ".json"
+	var targ = filepath.Join(cfg.DatabaseDir, imageId[:2], imageId) + ".json"
 	os.MkdirAll(filepath.Dir(targ), 0700)
 	fp, _ := os.Create(targ)
 	json_text, _ := json.Marshal(&data)
@@ -120,18 +126,24 @@ func emit(w http.ResponseWriter, resp *ClientResponse) {
 }
 
 func scanImage(contentPath string, imageId string) (*ClientResponse, error) {
-	cmdStr := "insights-client --analyze-image --verbose --to-json --mountpoint " + contentPath
+	cmdStr := fmt.Sprintf(cfg.Cmd, contentPath)
 	out, _ := exec.Command("/bin/sh", "-c", cmdStr).Output()
-	fmt.Printf("%s", cmdStr+"\n")
-	fmt.Printf("%s", out)
+	fmt.Println(cmdStr)
+	fmt.Println(out)
 	var res ClientResponse
 	json.Unmarshal(out, &res)
 	persist(imageId, &res)
 	return &res, nil
 }
 
+func readConfig() {
+	fp, _ := os.Open("config.json")
+	json.NewDecoder(fp).Decode(&cfg)
+}
+
 func main() {
+	readConfig()
 	http.HandleFunc("/inspect", inspect)
 	http.HandleFunc("/echo", echo)
-	http.ListenAndServe(":9000", nil) //TODO don't hard code port
+	http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), nil)
 }
