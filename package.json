@@ -1,0 +1,26 @@
+{
+  "name": "insights-bigzam",
+  "version": "1.0.0",
+  "description": "Openshift application for viewing Insights scan results.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedhatInsights/insights-bigzam.git"
+  },
+  "author": "Jeremy Crafts",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RedhatInsights/insights-bigzam/issues"
+  },
+  "homepage": "https://github.com/RedhatInsights/insights-bigzam#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "http": "0.0.0",
+    "pug": "^2.0.0-rc.4",
+    "requests": "^0.2.2"
+  }
+}
