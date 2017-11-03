@@ -1,5 +1,19 @@
 html
     head
         title Insights Big Zam
+        link(rel='stylesheet' href='style.css')
+        script(src='https://unpkg.com/vue')
+        script(src='scripts/index.js')
     body
-        p ハローワールド
+        #app
+            h1 Insights Scan Results for {{display_name}}
+            div(v-for='report in reports')
+                hr
+                div
+                    h3(style='display:inline-block') {{report.title.plain}}&nbsp;
+                    span {{report.category}}
+                p {{report.title.plain}}
+                p {{report.description.plain}}
+                p {{report.details.plain}}
+                p {{report.resolution.plain}}
+
