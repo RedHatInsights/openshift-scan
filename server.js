@@ -2,17 +2,18 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
+const sqldb = require('./sqldb');
 const bodyParser = require('body-parser');
 const pugToHtml = require('./pugToHtml');
 
+const config = require('./config');
 const app = express();
-const appRoot = path.join(__dirname, 'app');
-const templateDir = path.join(appRoot, 'templates');
-const publicDir = path.join(appRoot, 'public');
-const scriptsDir = path.join(appRoot, 'scripts');
+const templateDir = path.join(config.appRoot, 'templates');
+const publicDir = path.join(config.appRoot, 'public');
+const scriptsDir = path.join(config.appRoot, 'scripts');
 
 // app config
-app.set('port', 8080);
+app.set('port', config.port);
 app.use(express.static(publicDir));
 app.use('/scripts', express.static(scriptsDir));
 
