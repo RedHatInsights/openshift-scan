@@ -10,7 +10,6 @@ let dbUri = 'mysql://' +
 config = {
     port: 8080,
     root: path.normalize(__dirname + '/..'),
-    appRoot: path.normalize(__dirname + '/../app'),
     sequelize: {
         uri: dbUri,
         options: {

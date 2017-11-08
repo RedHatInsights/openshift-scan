@@ -2,8 +2,6 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
-const sqldb = require('./sqldb');
-const bodyParser = require('body-parser');
 const pugToHtml = require('./pugToHtml');
 
 const config = require('./config');
@@ -16,16 +14,6 @@ const scriptsDir = path.join(config.appRoot, 'scripts');
 app.set('port', config.port);
 app.use(express.static(publicDir));
 app.use('/scripts', express.static(scriptsDir));
-
-// routes
-app.post('/report', bodyParser.json(), (req, res) => {
-    //
-});
-
-app.get('/report/:id', (req, res) => {
-    //
-});
-
 
 // initialize~
 pugToHtml(templateDir, publicDir);

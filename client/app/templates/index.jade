@@ -1,0 +1,50 @@
+html
+    head
+        title Insights Big Zam
+        link(rel='stylesheet' href='style.css')
+        link(rel='stylesheet' href='bootstrap.css')
+        script(src='https://unpkg.com/vue')
+        script(src='scripts/index.js')
+    body
+        #app
+            //- system metadata
+            div(style='width:60%; display:inline-block')
+                div
+                    h2 {{ display_name }}
+                div
+                    b Hostname:&nbsp;
+                    span {{ system.hostname }}
+                div
+                    b UUID:&nbsp;
+                    span {{ system.system_id }}
+            div(style='width:40%; display:inline-block')
+                table
+                    tbody
+                        tr
+                            td Operating System
+                            td {{ system.metadata.release }}
+            //- separator
+            //- rule summaries
+            
+            div(v-for='report in reports')
+                hr
+                div
+                    div
+                        h3(style='display:inline-block') {{ report.category }}  &gt; {{ report.title.plain }}&nbsp;
+                    div
+                        span Impact: {{ report.impact }}&nbsp;
+                        span Likelihood: {{ report.likelihood }}&nbsp;
+                        span Total Risk: &nbsp;
+                    div
+                        h4 Detected Issues
+                        div(v-html='report.summary.html')
+                        div(v-html='report.details.html')
+                        h4 Steps to Resolve
+                        div(v-html='report.resolution.html')
+                        div(v-html='report.reference.html')
+
+            //-     p {{report.title.plain}}
+            //-     p {{report.description.plain}}
+            //-     p {{report.details.plain}}
+            //-     p {{report.resolution.plain}}
+

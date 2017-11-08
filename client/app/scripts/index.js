@@ -6,9 +6,8 @@ window.onload = function () {
         el: '#app',
         data: {
             display_name: testData.system.hostname || testData.system.system_id,
+            system: testData.system,
             reports: testData.reports
         }
     });
-
-
 };
