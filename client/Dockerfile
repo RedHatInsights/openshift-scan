@@ -1,13 +1,15 @@
-FROM node:6
+FROM centos
 EXPOSE 8080
+
+RUN yum install -y epel-release     
+RUN yum install -y nodejs
 
 RUN mkdir /usr/bigzam
 WORKDIR /usr/bigzam
 COPY . /usr/bigzam
 
 RUN npm install
-
-COPY node_modules/bootstrap/dist/css/bootstrap.min.css app/public
-COPY node_modules/bootstrap/dist/css/bootstrap.min.css.map app/public
-COPY node_modules/bootstrap/dist/js/bootstrap.min.js app/public
+RUN mv node_modules/bootstrap/dist/css/bootstrap.min.css app/public
+RUN mv node_modules/bootstrap/dist/css/bootstrap.min.css.map app/public
+RUN mv node_modules/bootstrap/dist/js/bootstrap.min.js app/scripts
 CMD ["node", "server.js"]

@@ -32,6 +32,7 @@ items:
     postCommit: {}
     resources: {}
     source:
+      contextDir: client
       git:
         ref: master
         uri: ssh://git@github.com/RedHatInsights/insights-bigzam.git
@@ -42,15 +43,15 @@ items:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: node:6
+          name: centos:latest
           namespace: myproject
       type: Docker
     triggers:
     - github:
-        secret: -E5dTWait2TGeheOqGNd
+        secret: M_7Y_h8jekNKidwpOtNB
       type: GitHub
     - generic:
-        secret: 4Sjp8SedeRuCfAc70fno
+        secret: SqJsVWm34KXBfgkmR4PJ
       type: Generic
     - type: ConfigChange
     - imageChange: {}
@@ -159,6 +160,7 @@ items:
     postCommit: {}
     resources: {}
     source:
+      contextDir: server
       git:
         ref: master
         uri: ssh://git@github.com/RedHatInsights/insights-bigzam.git
@@ -174,10 +176,10 @@ items:
       type: Docker
     triggers:
     - github:
-        secret: _vtlT9EIx7blnuw0e5oN
+        secret: VB7ir-UouiGkiAJD_XQb
       type: GitHub
     - generic:
-        secret: 2WRUaoTneUlNBImKb9hT
+        secret: IlGDhU7aShexCvWFWCMU
       type: Generic
     - type: ConfigChange
     - imageChange: {}
