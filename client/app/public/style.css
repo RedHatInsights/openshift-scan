@@ -1,10 +1,29 @@
 body {
-    font-family: sans-serif;
+    font-family: Overpass, sans-serif;
+    color: rgb(88,88,88);
+    font-size:13px;
     margin-left:120px;
     margin-right:120px;
 }
 
 table, th, td {
-    border: 1px solid;
+    border: 1px solid #ddd;
     border-collapse: collapse;
+}
+
+#app table td {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 12px;
+    text-align: right;
+}
+
+#app table td:first-child {
+    background: #F2F5F8;
+    color: #5b5359;
+    width: 30%; 
+}
+
+#app {
+    padding: 30px;
 }
