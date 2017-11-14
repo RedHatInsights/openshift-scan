@@ -48,25 +48,30 @@ html
 
                         
             //- separator
+            .d-flex.flex-row-reverse
+                a Expand all
             //- rule summaries
             .d-flex.flex-column(v-if='Object.keys(reports).length > 0')
-                .card.rounded-0.p-3(style='margin:5px' v-for='report in reports')
-                    .card-body
-                        p
-                            h6(style='display:inline-block') {{ report.category }}  &gt; {{ report.title.plain }}&nbsp;
-                        p
-                            span Impact: {{ report.impact }}&nbsp;
-                            span Likelihood: {{ report.likelihood }}&nbsp;
-                            span Total Risk: &nbsp;
-                        p
-                            h6 Detected Issues
-                            div(v-html='report.summary.html')
-                            div(v-html='report.details.html')
-                        p 
-                            h6 Steps to Resolve
-                            div(v-html='report.resolution.html')
-                        hr
-                        p(v-html='report.reference.html')
+                div(v-for='report in reports')
+                    span(style='width:10px; position:absolute; margin-left:-10px; margin-top:10px; cursor:pointer' v-on:click='report.expanded_ = !report.expanded_') {{ report.expanded_ ? 'v' : '>' }}
+                    span.card.rounded-0.p-3(style='margin:5px')
+                        .card-body
+                            p
+                                h6(style='display:inline-block') {{ report.category }}  &gt; {{ report.title.plain }}&nbsp;
+                            p
+                                span Impact: {{ report.impact }}&nbsp;
+                                span Likelihood: {{ report.likelihood }}&nbsp;
+                                span Total Risk: &nbsp;
+                            div(v-show='report.expanded_')
+                                p
+                                    h6 Detected Issues
+                                    div(v-html='report.summary.html')
+                                    div(v-html='report.details.html')
+                                p 
+                                    h6 Steps to Resolve
+                                    div(v-html='report.resolution.html')
+                                hr
+                                p(v-html='report.reference.html')
 
             div(v-if='Object.keys(reports).length === 0')
                 p No Actions
