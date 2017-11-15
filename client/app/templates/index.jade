@@ -49,7 +49,7 @@ html
                         
             //- separator
             .d-flex.flex-row-reverse
-                a Expand all
+                a(style='cursor:pointer' v-on:click='showHideAll(all, reports)') {{ all.shown ? 'Collapse all' : 'Expand all' }}
             //- rule summaries
             .d-flex.flex-column(v-if='Object.keys(reports).length > 0')
                 div(v-for='report in reports')
