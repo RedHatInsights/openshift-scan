@@ -34,7 +34,7 @@ items:
     source:
       contextDir: client
       git:
-        ref: master
+        ref: docker-test
         uri: ssh://git@github.com/RedHatInsights/insights-bigzam.git
       type: Git
       sourceSecret:
@@ -162,7 +162,7 @@ items:
     source:
       contextDir: server
       git:
-        ref: master
+        ref: docker-test
         uri: ssh://git@github.com/RedHatInsights/insights-bigzam.git
       type: Git
       sourceSecret:

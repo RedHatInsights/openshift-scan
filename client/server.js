@@ -18,8 +18,12 @@ app.use('/scripts', express.static(scriptsDir));
 
 app.get('/report/:id', (req, res) => {
     request
-    .get(process.env.BIGZAM_API + '/report/' + req.params.id)
+    .get('http://' + process.env.BIGZAM_API + '/report/' + req.params.id)
     .pipe(res);
+});
+
+app.get('/*', (req, res) => {
+    res.sendFile('index.html', {root: publicDir});
 });
 
 // initialize~
