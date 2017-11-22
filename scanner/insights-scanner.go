@@ -19,6 +19,9 @@ func main() {
 
 	scanner := iclient.NewDefaultScanner()
 
-	_, out, _ := scanner.ScanImage(scanOptions.DstPath, image.ID)
+	_, out, err := scanner.ScanImage(scanOptions.DstPath, image.ID)
+	if err != nil {
+		log.Fatalf("Scan failed %s", err)
+	}
 	log.Printf(string(*out))
 }
