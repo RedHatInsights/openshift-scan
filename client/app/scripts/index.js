@@ -6,7 +6,8 @@ window.onload = function () {
     } else {
         fetch('/report/' + id).then(response => {
             return response.json();
-        }).then(data => {
+        }).then(json => {
+            var data = JSON.parse(json.report);
             Object.keys(data.reports).forEach(r => {
                 data.reports[r].expanded_ = false;
             });
@@ -19,10 +20,10 @@ window.onload = function () {
                     metadata: data.system.metadata,
                     system: data.system,
                     reports: data.reports,
-                    showHideAll: function (all, d) {
+                    showHideAll: function (all, reports) {
                         all.shown = !all.shown;
-                        Object.keys(d).forEach(d => {
-                            d[d].expanded_ = all.shown;
+                        Object.keys(reports).forEach(r => {
+                            reports[r].expanded_ = all.shown;
                         });
                     }
                 }
