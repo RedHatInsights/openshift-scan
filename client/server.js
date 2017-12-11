@@ -16,9 +16,15 @@ app.set('port', config.port);
 app.use(express.static(publicDir));
 app.use('/scripts', express.static(scriptsDir));
 
-app.get('/report/:id', (req, res) => {
+app.get('/reports/', (req, res) => {
     request
-    .get('http://' + process.env.BIGZAM_API + '/report/' + req.params.id)
+    .get('http://' + process.env.BIGZAM_API + '/reports/')
+    .pipe(res);
+});
+
+app.get('/reports/:id', (req, res) => {
+    request
+    .get('http://' + process.env.BIGZAM_API + '/reports/' + req.params.id)
     .pipe(res);
 });
 
