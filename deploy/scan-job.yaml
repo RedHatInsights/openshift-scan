@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: scan-controller
+  namespace: insights-scan
+spec:
+  template:
+    metadata:
+      name: scan-controller
+      namespace: insights-scan
+      labels:
+        name: insights-controller
+      annotations:
+        openshift.io/scc: privileged
+    spec:
+      volumes:
+        -
+          name: dockersocket
+          hostPath:
+            path: /var/run/docker.sock
+      containers:      
+        - name: insights-controller
+          image: lphiri/ocp_controller
+          env:
+          - name: INSIGHTS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: insights-controller-credentials
+                key: username
+          - name: INSIGHTS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: insights-controller-credentials
+                key: password
+          - name: INSIGHTS_AUTHMETHOD
+            value: BASIC
+          command:
+            - /insights_controller
+          resources:
+            requests:
+              cpu: 50m
+            limits:
+              cpu: 500m
+          volumeMounts:
+            -
+              name: dockersocket
+              mountPath: /var/run/docker.sock
+          terminationMessagePath: /dev/termination-log
+          imagePullPolicy: Never
+          securityContext:
+            privileged: true
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      serviceAccountName: insights-scan
+      serviceAccount: insights-scan
+      securityContext:
