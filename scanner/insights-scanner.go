@@ -31,7 +31,7 @@ func main() {
 	api := os.Getenv("SCAN_API")
 	jsonStr := []byte(*out)
 	req, err := http.NewRequest("POST", api + "/" + image.ID, bytes.NewBuffer(jsonStr))
-	req.Header.set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
