@@ -25,7 +25,7 @@ func main() {
 	// 	log.Fatalf("Scan failed %s", err)
 	// }
 	// log.Printf(string(*out))
-	api := os.Getenv("SCAN_API")
+	api := 'http://' + os.Getenv("SCAN_API") + '/reports'
 	jsonStr := []byte(`{"test":"test"}`)
 	req, err := http.NewRequest("POST", api + "/1", bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
