@@ -1,6 +1,9 @@
 package main
 
 import (
+	"os"
+	"net/http"
+	"bytes"
 	"flag"
 
 	"log"
@@ -20,8 +23,22 @@ func main() {
 	scanner := iclient.NewDefaultScanner()
 
 	_, out, err := scanner.ScanImage(scanOptions.DstPath, image.ID)
+
 	if err != nil {
 		log.Fatalf("Scan failed %s", err)
 	}
 	log.Printf(string(*out))
+	api := os.Getenv("SCAN_API")
+	jsonStr := []byte(*out)
+	req, err := http.NewRequest("POST", api + "/" + image.ID, bytes.NewBuffer(jsonStr))
+	req.Header.set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	log.Printf("Status: %s", resp.Status)
 }
