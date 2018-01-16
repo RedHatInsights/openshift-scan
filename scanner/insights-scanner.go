@@ -20,6 +20,8 @@ func main() {
 	mounter := container.NewDefaultImageMounter(*scanOptions)
 	_, image, _ := mounter.Mount()
 
+	log.Printf(scanOptions.DstPath)
+
 	scanner := iclient.NewDefaultScanner()
 
 	_, out, err := scanner.ScanImage(scanOptions.DstPath, image.ID)
