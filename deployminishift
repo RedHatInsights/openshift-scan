@@ -1,0 +1,10 @@
+# DEFINE THESE FOR YOUR ENVIRONMENT
+SCANJOBYAML="/home/rbrantle/Git/redhatinsights/insights-ocp/deploy/scan-job.yaml"
+
+# Stop any minishift scan controller jobs
+echo "Stopping any minishift scan controller jobs..."
+sudo oc-minishift delete job scan-controller
+
+# Start new minishift scan controller jobs
+echo "Starting new minishift scan controller job..."
+sudo oc-minishift create -f $SCANJOBYAML

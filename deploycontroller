@@ -1,0 +1,33 @@
+# DEFINE THIS STUFF FOR YOUR ENVIRONMENT
+GOPATH="/home/rbrantle/go"
+OCPPATH=$GOPATH"/src/github.com/RedHatInsights/insights-ocp/controller/"
+CMDBUILDPATH=$OCPPATH"cmd"
+CONTROLLERHOSTFOLDER="/home/rbrantle/hostfolder/insights-controller.tar.gz"
+MINISHIFTHOSTFOLDER="/mnt/sda1/mysharehome/insights-controller.tar.gz"
+
+# Copy over new source from working Git repo to Go directories
+cp -rfv ./controller/* $OCPPATH
+
+# Building controller source
+cd $CMDBUILDPATH
+echo 'Building controller...'
+go build -o ../build/cmd
+if [ $? -gt 0 ]
+then
+    echo 'Build failed.'
+    exit
+fi
+cd ..
+
+# Building controller image
+echo 'Building controller image...'
+sudo docker build -t redhatinsights/insights-controller .
+
+# Saving controller image
+echo 'Saving controller image...'
+sudo docker save -o $CONTROLLERHOSTFOLDER redhatinsights/insights-controller
+sudo chmod 777 $CONTROLLERHOSTFOLDER
+
+# Loading controller image into minishift
+echo "Loading new controller image in minishift..."
+sudo minishift ssh "sudo docker load -i $MINISHIFTHOSTFOLDER"
