@@ -23,7 +23,10 @@ spec:
           image: redhatinsights/insights-controller
           env:
           - name: SCAN_API
-            value: insights-bigzam-api.192.168.42.107.nip.io
+            valueFrom:
+              secretKeyRef:
+                name: insights-controller-credentials
+                key: scanapi
           - name: INSIGHTS_USERNAME
             valueFrom:
               secretKeyRef:
