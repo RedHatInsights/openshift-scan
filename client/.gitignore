@@ -1,0 +1,4 @@
+node_modules
+app/public/*.html
+app/**/bootstrap*
+app/scripts/jquery*
