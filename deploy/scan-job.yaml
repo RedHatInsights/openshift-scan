@@ -20,8 +20,13 @@ spec:
             path: /var/run/docker.sock
       containers:      
         - name: insights-controller
-          image: lphiri/ocp_controller
+          image: redhatinsights/insights-controller
           env:
+          - name: SCAN_API
+            valueFrom:
+              secretKeyRef:
+                name: insights-controller-credentials
+                key: scanapi
           - name: INSIGHTS_USERNAME
             valueFrom:
               secretKeyRef:

@@ -1,8 +1,13 @@
 package controller
 
 import (
+	"os"
 	"log"
 	"sync"
+	"io"
+	"time"
+	"bufio"
+	"strings"
 
 	"github.com/fsouza/go-dockerclient"
 	osclient "github.com/openshift/origin/pkg/client"
@@ -24,12 +29,19 @@ type Controller struct {
 	wait            sync.WaitGroup
 }
 
-func getScanArgs(imageID string) []string {
+type ScanResult struct {
+	completed bool
+	scanId    string
+}
+
+func getScanArgs(imageID string, mountPoint string) []string {
 
 	args := []string{}
 	args = append(args, "/insights-scanner")
 	args = append(args, "-image")
 	args = append(args, imageID)
+	args = append(args, "-mount_path")
+	args = append(args, mountPoint)
 
 	return args
 }
@@ -63,9 +75,10 @@ func (c *Controller) ScanImages() {
 	}
 	for _, image := range imageList.Items {
 		log.Printf("Scanning image %s %s", image.DockerImageMetadata.ID, image.DockerImageReference)
+		// c.scanImage("image.DockerImageMetadata.ID", getScanArgs(string(image.DockerImageReference) + ":latest", "/tmp/image-content8"))
 
 	}
-	c.scanImage("image.DockerImageMetadata.ID", getScanArgs("registry.access.redhat.com/rhscl/postgresql-94-rhel7"))
+	c.scanImage("image.DockerImageMetadata.ID", getScanArgs("registry.access.redhat.com/rhscl/postgresql-94-rhel7", "/tmp/image-content8"))
 	return
 
 }
@@ -75,7 +88,7 @@ func (c *Controller) scanImage(id string, args []string) error {
 	client, err := docker.NewVersionedClient(endpoint, "1.22")
 	binds := []string{}
 	binds = append(binds, "/var/run/docker.sock:/var/run/docker.sock")
-	scanner := "lphiri/insights-scanner"
+	scanner := "redhatinsights/insights-scanner"
 
 	container, err := client.CreateContainer(
 		docker.CreateContainerOptions{
@@ -85,6 +98,10 @@ func (c *Controller) scanImage(id string, args []string) error {
 				AttachStderr: true,
 				Tty:          true,
 				Entrypoint:   args,
+				Env: []string{"SCAN_API=" + os.Getenv("SCAN_API"),
+							  "INSIGHTS_USERNAME=" + os.Getenv("INSIGHTS_USERNAME"),
+							  "INSIGHTS_PASSWORD=" + os.Getenv("INSIGHTS_PASSWORD"),
+							  "INSIGHTS_AUTHMETHOD=" + os.Getenv("INSIGHTS_AUTHMETHOD")},
 			},
 			HostConfig: &docker.HostConfig{
 				Privileged: true,
@@ -97,6 +114,66 @@ func (c *Controller) scanImage(id string, args []string) error {
 		return err
 	}
 	log.Println(container.ID)
+
+	done := make(chan ScanResult)
+	abort := make(chan bool, 1)
+	r, w := io.Pipe()
+
+    monitorOptions := docker.AttachToContainerOptions{
+        Container:    container.ID,
+        OutputStream: w,
+        ErrorStream:  w,
+        Stream:       true,
+        Stdout:       true,
+        Stderr:       true,
+        Logs:         true,
+        RawTerminal:  true,
+    }
+
+    go client.AttachToContainer(monitorOptions) // will block so isolate
+
+    go func(reader *io.PipeReader, a chan bool) {
+
+		for {
+			time.Sleep(time.Second)
+			select {
+			case _ = <-a:
+				log.Printf("Received IO shutdown for scanner.\n")
+				reader.Close()
+				return
+
+			default:
+			}
+
+		}
+
+	}(r, abort)
+
+	go func(reader io.Reader, c chan ScanResult) {
+		scanner := bufio.NewScanner(reader)
+		scan := ScanResult{completed: false, scanId: ""}
+
+		for scanner.Scan() {
+			out := scanner.Text()
+			if strings.Contains(out, "Post Scan...") {
+				log.Printf("Found completed scan with result.\n")
+				scan.completed = true
+			}
+			log.Printf("%s\n", out)
+
+			if strings.Contains(out, "ScanContainerView{scanId=") {
+				cmd := strings.Split(out, "ScanContainerView{scanId=")
+				eos := strings.Index(cmd[1], ",")
+				scan.scanId = cmd[1][:eos]
+				log.Printf("Found scan ID %s with result.\n", scan.scanId)
+			}
+		}
+
+		log.Printf("Placing scan result %t from scanId %s into channel.\n", scan.completed, scan.scanId)
+		c <- scan
+
+	}(r, done)
+
 	err = client.StartContainer(container.ID, &docker.HostConfig{Privileged: true})
 	if err != nil {
 		log.Println("FAIL to start")
@@ -118,5 +195,9 @@ func (c *Controller) scanImage(id string, args []string) error {
 	}
 
 	err = client.RemoveContainer(options)
+
+	abort <- true
+
+
 	return err
 }

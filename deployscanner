@@ -1,0 +1,31 @@
+# DEFINE THIS STUFF FOR YOUR ENVIRONMENT
+GOPATH="/home/rbrantle/go"
+OCPPATH=$GOPATH"/src/github.com/RedHatInsights/insights-ocp/scanner/"
+SCANNERHOSTFOLDER="/home/rbrantle/hostfolder/insights-scanner.tar.gz"
+MINISHIFTHOSTFOLDER="/mnt/sda1/mysharehome/insights-scanner.tar.gz"
+
+# Copy over new source from working Git repo to Go directories
+cp -rfv ./scanner/* $OCPPATH
+
+# Building scanner source
+cd $OCPPATH
+echo 'Building scanner...'
+go build -o insights-scanner
+if [ $? -gt 0 ]
+then
+    echo 'Build failed.'
+    exit
+fi
+
+# Build scanner image
+echo 'Building scanner image...'
+sudo docker build -t redhatinsights/insights-scanner .
+
+# Save scanner image
+echo 'Saving scanner image...'
+sudo docker save -o $SCANNERHOSTFOLDER redhatinsights/insights-scanner
+sudo chmod 777 $SCANNERHOSTFOLDER
+
+# Load scanner into minishift
+echo "Loading new scanner image in minishift..."
+sudo minishift ssh "sudo docker load -i $MINISHIFTHOSTFOLDER"

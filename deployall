@@ -1,0 +1,18 @@
+# This handy script will do the following:
+# 1) Build new controller stuff and deploy to minishift
+# 2) Build new scanner stuff and deploy to minishift
+# 3) Delete any existing scanner jobs and deploy new ones
+#
+# This script assumes the following:
+# 1) You have a configured and working minishift instance
+# 2) You are currently logged into your minishift instance
+# 3) You are switched to the "insights-scan" project in your minishift instance
+# 4) You have "hostfolders" setup for your minishift instance to share/load images into minishift
+# 5) You have a local running docker instance
+#
+# You will need to define your paths and vars in "deploycontroller," "deployscanner," and "deployminishift."
+# Note: It won't make your coffee for you BUT you can probably make an entire pot by the time this thing finishes
+sudo echo "Running insights-ocp deployment..." # hack to cache a sudo password lolololol
+sh deploycontroller
+sh deployscanner
+sh deployminishift
