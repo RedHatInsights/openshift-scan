@@ -1,0 +1,260 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: insights-bigzam-ui
+    name: insights-bigzam-ui
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: insights-bigzam-ui
+    name: insights-bigzam-ui
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: insights-bigzam-ui:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: client
+      git:
+        ref: master
+        uri: ssh://git@github.com/RedHatInsights/insights-bigzam.git
+      type: Git
+      sourceSecret:
+        name: sshsecret
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: centos:latest
+          namespace: myproject
+      type: Docker
+    triggers:
+    - github:
+        secret: M_7Y_h8jekNKidwpOtNB
+      type: GitHub
+    - generic:
+        secret: SqJsVWm34KXBfgkmR4PJ
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: insights-bigzam-ui
+    name: insights-bigzam-ui
+  spec:
+    replicas: 1
+    selector:
+      app: insights-bigzam-ui
+      deploymentconfig: insights-bigzam-ui
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: insights-bigzam-ui
+          deploymentconfig: insights-bigzam-ui
+      spec:
+        containers:
+        - image: insights-bigzam-ui:latest
+          name: insights-bigzam-ui
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - insights-bigzam-ui
+        from:
+          kind: ImageStreamTag
+          name: insights-bigzam-ui:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: insights-bigzam-ui
+    name: insights-bigzam-ui
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: insights-bigzam-ui
+      deploymentconfig: insights-bigzam-ui
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: insights-bigzam-api
+    name: insights-bigzam-api
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: insights-bigzam-api
+    name: insights-bigzam-api
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: insights-bigzam-api:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: server
+      git:
+        ref: master
+        uri: ssh://git@github.com/RedHatInsights/insights-bigzam.git
+      type: Git
+      sourceSecret:
+        name: sshsecret
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: node:6
+          namespace: myproject
+      type: Docker
+    triggers:
+    - github:
+        secret: VB7ir-UouiGkiAJD_XQb
+      type: GitHub
+    - generic:
+        secret: IlGDhU7aShexCvWFWCMU
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: insights-bigzam-api
+    name: insights-bigzam-api
+  spec:
+    replicas: 1
+    selector:
+      app: insights-bigzam-api
+      deploymentconfig: insights-bigzam-api
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: insights-bigzam-api
+          deploymentconfig: insights-bigzam-api
+      spec:
+        containers:
+        - image: insights-bigzam-api:latest
+          name: insights-bigzam-api
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - insights-bigzam-api
+        from:
+          kind: ImageStreamTag
+          name: insights-bigzam-api:latest
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: insights-bigzam-api
+    name: insights-bigzam-api
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: insights-bigzam-api
+      deploymentconfig: insights-bigzam-api
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}

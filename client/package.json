@@ -1,0 +1,29 @@
+{
+  "name": "insights-bigzam-ui",
+  "version": "1.0.0",
+  "description": "Host for the Big Zam front end",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/redhatinsights/insights-bigzam.git"
+  },
+  "author": "Jeremy Crafts, Richard Brantley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/redhatinsights/insights-bigzam/issues"
+  },
+  "homepage": "https://github.com/redhatinsights/insights-bigzam#readme",
+  "dependencies": {
+    "bootstrap": "4.0.0-alpha.6",
+    "browser-sync": "^2.23.5",
+    "express": "^4.16.2",
+    "gulp-nodemon": "^2.2.1",
+    "jquery": "^3.2.1",
+    "pug": "^2.0.0-rc.4",
+    "request": "^2.83.0"
+  }
+}
