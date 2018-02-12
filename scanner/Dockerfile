@@ -14,8 +14,8 @@ RUN mkdir -p /go/src/github.com/RedHatInsights/insights-ocp/scanner
 WORKDIR /go/src/github.com/RedHatInsights/insights-ocp/scanner
 
 COPY ./insights-scanner.go ./insights-scanner.go
+COPY vendor ./vendor
 
-RUN go get -d -v ./...
 RUN go build -o insights-scanner
 
 ENV EGG=/etc/insights-client/rpm.egg
